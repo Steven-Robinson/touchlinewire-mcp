@@ -1,0 +1,11 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "name": "touchlinewire-mcp",
+  "description": "Premier League matchday intelligence: verified starting XIs, tactical formations, live match reports with chronological event timelines, squad injuries, fixtures and standings via Touchline Wire.",
+  "maintainers": [
+    "Steven-Robinson"
+  ],
+  "categories": [
+    "sports"
+  ]
+}
