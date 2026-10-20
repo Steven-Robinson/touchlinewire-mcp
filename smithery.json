@@ -1,0 +1,6 @@
+{
+  "$schema": "https://smithery.ai/schema.json",
+  "id": "Steven-Robinson/touchlinewire-mcp",
+  "name": "Touchline Wire MCP Server",
+  "description": "Premier League matchday tactical intelligence: verified starting lineups, tactical formations, live match reports with chronological event timelines, squad injuries, fixtures and standings."
+}
