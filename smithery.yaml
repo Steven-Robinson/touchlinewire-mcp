@@ -1,10 +1,11 @@
+runtime: "node"
 startCommand:
-  type: stdio
-  configSchema:
-    type: object
-    properties: {}
-  commandFunction: |-
-    () => ({
-      command: 'node',
-      args: ['src/index.js']
-    })
+  type: "stdio"
+configSchema:
+  type: "object"
+  properties: {}
+commandFunction: |-
+  (config) => ({
+    command: 'node',
+    args: ['src/index.js']
+  })
