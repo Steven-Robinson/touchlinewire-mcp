@@ -190,6 +190,82 @@ server.tool(
   }
 );
 
+// 8. Set-Piece Takers (Penalties, Free-Kicks, Corners)
+server.tool(
+  "get_set_piece_takers",
+  "Retrieve the authoritative hierarchy of set-piece specialists for Premier League clubs: primary and backup penalty takers, direct free-kick takers, and corner specialists ordered by manager priority.",
+  {
+    club: z.string().optional().describe("Optional Premier League club name or slug (e.g. 'arsenal', 'chelsea', 'liverpool'). If omitted, returns all 20 clubs.")
+  },
+  async ({ club }) => {
+    let endpoint = "/set-pieces";
+    if (club) {
+      const cleanClub = club.toLowerCase().trim().replace(/\s+/g, "-");
+      endpoint = `/set-pieces/${encodeURIComponent(cleanClub)}`;
+    }
+    const data = await fetchTouchline(endpoint);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(data, null, 2)
+        }
+      ]
+    };
+  }
+);
+
+// 9. Fixture Difficulty Rankings (FDR Schedule)
+server.tool(
+  "get_fixture_difficulty",
+  "Retrieve upcoming Fixture Difficulty Ratings (FDR) ranking Premier League clubs by easiest to toughest schedule over upcoming matches (3 to 10 fixtures) with home/away difficulty tags (1=easiest, 5=hardest).",
+  {
+    window: z.number().int().min(1).max(10).optional().describe("Number of upcoming matches to analyze (default: 5)"),
+    sort: z.enum(["easiest", "hardest"]).optional().describe("Sort ordering of ranked clubs (default: 'easiest')"),
+    club: z.string().optional().describe("Filter schedule difficulty to a single club (e.g. 'arsenal')")
+  },
+  async ({ window = 5, sort = "easiest", club }) => {
+    let endpoint = `/schedule/difficulty?window=${window}&sort=${sort}`;
+    if (club) {
+      const cleanClub = club.toLowerCase().trim().replace(/\s+/g, "-");
+      endpoint = `/schedule/difficulty/${encodeURIComponent(cleanClub)}?window=${window}`;
+    }
+    const data = await fetchTouchline(endpoint);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(data, null, 2)
+        }
+      ]
+    };
+  }
+);
+
+// 10. Tactical Match Preview & Formations Clash
+server.tool(
+  "get_match_preview",
+  "Retrieve pre-match tactical dossiers for upcoming fixtures: predicted formation clash (e.g. 4-3-3 vs 5-4-1), manager tactical records, expected starter matchups, medical availability, and 5-game form guide.",
+  {
+    home_club: z.string().describe("Home club name or slug (e.g. 'arsenal', 'liverpool', 'man-city')"),
+    away_club: z.string().describe("Away club name or slug (e.g. 'chelsea', 'spurs', 'aston-villa')")
+  },
+  async ({ home_club, away_club }) => {
+    const cleanHome = home_club.toLowerCase().trim().replace(/\s+/g, "-");
+    const cleanAway = away_club.toLowerCase().trim().replace(/\s+/g, "-");
+    const endpoint = `/matches/${encodeURIComponent(cleanHome)}-vs-${encodeURIComponent(cleanAway)}/preview`;
+    const data = await fetchTouchline(endpoint);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(data, null, 2)
+        }
+      ]
+    };
+  }
+);
+
 // Start server on standard I/O transport
 async function run() {
   const transport = new StdioServerTransport();

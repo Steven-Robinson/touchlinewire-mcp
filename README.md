@@ -15,8 +15,11 @@ Powered by [Touchline Wire](https://touchlinewire.com). Zero API keys required.
 | `get_all_lineups` | Complete slate of all 20 predicted Starting 11s and tactical formations for the upcoming gameweek. | None |
 | `get_injuries` | Live Premier League injury wire, medical recovery status, chance of playing %, and press conference quotes. | `club` (optional) |
 | `get_fixtures` | Upcoming Premier League matchday calendar with local kickoff ISO dates and home/away pairings. | `gameweek` (optional), `club` (optional) |
-| `get_clubs` | Complete directory of all 20 clubs: managers, stadiums, primary colors, and set-piece specialists. | None |
+| `get_clubs` | Complete directory of all 20 clubs: managers, stadiums, primary colors, and stadium capacities. | None |
 | `get_match_report` | In-depth tactical match reports: official lineups, chronological match event timeline, xG, and possession stats. | `fixture_id` (optional), `club` (optional), `latest` (optional) |
+| `get_set_piece_takers` | Hierarchy of set-piece specialists: primary/backup penalties, direct free-kicks, and corners. | `club` (optional) |
+| `get_fixture_difficulty` | Upcoming Fixture Difficulty Ratings (FDR) ranking all 20 clubs easiest to hardest (next 3–10 matches). | `window` (default 5), `sort` (`easiest`/`hardest`), `club` (optional) |
+| `get_match_preview` | Pre-match tactical preview: predicted formations clash (e.g. 4-3-3 vs 5-4-1), manager H2H, and form guide. | `home_club`, `away_club` |
 
 ---
 
