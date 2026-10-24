@@ -16,7 +16,7 @@ const BASE_URL = "https://touchlinewire.com/api/v1";
 
 const server = new McpServer({
   name: "touchlinewire-mcp",
-  version: "1.0.0"
+  version: "1.1.0"
 });
 
 // Helper for fetching from Touchline Wire API
