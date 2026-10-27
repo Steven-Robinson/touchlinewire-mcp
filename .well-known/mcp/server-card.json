@@ -1,0 +1,163 @@
+{
+  "serverInfo": {
+    "name": "Touchline Wire",
+    "version": "1.1.0"
+  },
+  "authentication": {
+    "required": false
+  },
+  "tools": [
+    {
+      "name": "get_table",
+      "description": "Retrieve the official 2026/27 Premier League standings table with positions, points, goal difference, games played, and European qualification / relegation cutoff zones.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_predicted_lineup",
+      "description": "Get the verified predicted tactical Starting 11, formation, starting player names and positions, bench options, and AI Tactical Confidence rating for a Premier League club ahead of kickoff.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "club": {
+            "type": "string",
+            "description": "Club name or slug (e.g. 'arsenal', 'liverpool', 'chelsea', 'man-city', 'spurs', 'aston-villa')"
+          }
+        },
+        "required": [
+          "club"
+        ]
+      }
+    },
+    {
+      "name": "get_all_lineups",
+      "description": "Retrieve the complete slate of all 20 Premier League predicted formations, starting XIs, and tactical confidence scores for the current gameweek.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_injuries",
+      "description": "Retrieve live Premier League injury telemetry, medical room updates, chance of playing percentages, and press conference manager quotes. Can optionally be filtered by club.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "club": {
+            "type": "string",
+            "description": "Optional club name or slug to filter injuries (e.g. 'arsenal', 'chelsea')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_fixtures",
+      "description": "List Premier League matchday calendar fixtures with local kickoff ISO dates, gameweek numbers, and home/away pairings. Can filter by gameweek number and/or club.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameweek": {
+            "type": "integer",
+            "description": "Optional specific gameweek number (e.g. 7, 8)"
+          },
+          "club": {
+            "type": "string",
+            "description": "Optional club name to filter fixtures (e.g. 'liverpool')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_clubs",
+      "description": "List all 20 Premier League clubs with official managers, stadium names, capacities, primary club colors, and designated set-piece specialists (corners, free kicks, penalties).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_match_report",
+      "description": "Retrieve comprehensive tactical match reports with official starting lineups, chronological event timelines (goals, cards, substitutions), xG, possession, and Touchline Wire lineup forecast accuracy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fixture_id": {
+            "type": "integer",
+            "description": "Official match fixture ID (e.g. 1557417)"
+          },
+          "club": {
+            "type": "string",
+            "description": "Club name or slug to get the latest match for (e.g. 'arsenal', 'chelsea')"
+          },
+          "latest": {
+            "type": "boolean",
+            "description": "Set to true to get the latest match across the entire Premier League"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_set_piece_takers",
+      "description": "Retrieve the authoritative hierarchy of set-piece specialists for Premier League clubs: primary and backup penalty takers, direct free-kick takers, and corner specialists ordered by manager priority.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "club": {
+            "type": "string",
+            "description": "Optional Premier League club name or slug (e.g. 'arsenal', 'chelsea', 'liverpool'). If omitted, returns all 20 clubs."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_fixture_difficulty",
+      "description": "Retrieve upcoming Fixture Difficulty Ratings (FDR) ranking Premier League clubs by easiest to toughest schedule over upcoming matches (3 to 10 fixtures) with home/away difficulty tags (1=easiest, 5=hardest).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "window": {
+            "type": "integer",
+            "description": "Number of upcoming matches to analyze (default: 5)"
+          },
+          "sort": {
+            "type": "string",
+            "enum": [
+              "easiest",
+              "hardest"
+            ],
+            "description": "Sort ordering of ranked clubs (default: 'easiest')"
+          },
+          "club": {
+            "type": "string",
+            "description": "Filter schedule difficulty to a single club (e.g. 'arsenal')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_match_preview",
+      "description": "Retrieve pre-match tactical dossiers for upcoming fixtures: predicted formation clash (e.g. 4-3-3 vs 5-4-1), manager tactical records, expected starter matchups, medical availability, and 5-game form guide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "home_club": {
+            "type": "string",
+            "description": "Home club name or slug (e.g. 'arsenal', 'liverpool', 'man-city')"
+          },
+          "away_club": {
+            "type": "string",
+            "description": "Away club name or slug (e.g. 'chelsea', 'spurs', 'aston-villa')"
+          }
+        },
+        "required": [
+          "home_club",
+          "away_club"
+        ]
+      }
+    }
+  ],
+  "resources": [],
+  "prompts": []
+}
