@@ -1,7 +1,7 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
   "name": "touchlinewire-mcp",
-  "description": "Premier League matchday intelligence: verified starting XIs, tactical formations, live match reports with chronological event timelines, squad injuries, fixtures and standings via Touchline Wire.",
+  "description": "Zero-auth MCP server for 2026/27 Fantasy Premier League (FPL) expected minutes, captaincy picks, differentials & transfer trends, plus Premier League predicted starting XIs, injuries, PGMOL referees, match reports and standings.",
   "maintainers": [
     "Steven-Robinson"
   ],

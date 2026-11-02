@@ -1,8 +1,8 @@
 {
   "manifest_version": "0.2",
   "name": "touchlinewire-mcp",
-  "version": "1.1.0",
-  "description": "Model Context Protocol (MCP) server for Touchline Wire — Premier League tactical intelligence, verified predicted starting XIs, match reports, injuries & standings.",
+  "version": "1.2.0",
+  "description": "Zero-auth MCP server for 2026/27 Fantasy Premier League (FPL) expected minutes, captaincy picks, differentials & transfer trends, plus Premier League predicted starting XIs, injuries, referees & standings.",
   "author": {
     "name": "Ouroborean Software Ltd"
   },

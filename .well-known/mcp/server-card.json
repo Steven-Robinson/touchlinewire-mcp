@@ -1,18 +1,26 @@
 {
   "serverInfo": {
-    "name": "Touchline Wire",
-    "version": "1.1.0"
+    "name": "touchlinewire-mcp",
+    "title": "Touchline Wire — Premier League & FPL Intelligence",
+    "version": "1.2.0"
   },
   "authentication": {
     "required": false
   },
+  "endpoints": {
+    "streamableHttp": "https://touchlinewire.com/mcp"
+  },
   "tools": [
     {
-      "name": "get_table",
-      "description": "Retrieve the official 2026/27 Premier League standings table with positions, points, goal difference, games played, and European qualification / relegation cutoff zones.",
+      "name": "get_premier_league_table",
+      "description": "Retrieve the official 20-club Premier League standings including points, matches played, goal difference, goals scored/conceded, and 5-match form guide.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {}
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -28,15 +36,24 @@
         },
         "required": [
           "club"
-        ]
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
       "name": "get_all_lineups",
       "description": "Retrieve the complete slate of all 20 Premier League predicted formations, starting XIs, and tactical confidence scores for the current gameweek.",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {}
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -49,7 +66,12 @@
             "type": "string",
             "description": "Optional club name or slug to filter injuries (e.g. 'arsenal', 'chelsea')"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -66,15 +88,24 @@
             "type": "string",
             "description": "Optional club name to filter fixtures (e.g. 'liverpool')"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
       "name": "get_clubs",
       "description": "List all 20 Premier League clubs with official managers, stadium names, capacities, primary club colors, and designated set-piece specialists (corners, free kicks, penalties).",
       "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {}
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -95,7 +126,12 @@
             "type": "boolean",
             "description": "Set to true to get the latest match across the entire Premier League"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -108,7 +144,12 @@
             "type": "string",
             "description": "Optional Premier League club name or slug (e.g. 'arsenal', 'chelsea', 'liverpool'). If omitted, returns all 20 clubs."
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -119,6 +160,8 @@
         "properties": {
           "window": {
             "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
             "description": "Number of upcoming matches to analyze (default: 5)"
           },
           "sort": {
@@ -133,7 +176,12 @@
             "type": "string",
             "description": "Filter schedule difficulty to a single club (e.g. 'arsenal')"
           }
-        }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     },
     {
@@ -154,10 +202,185 @@
         "required": [
           "home_club",
           "away_club"
-        ]
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_fpl_gameweek_briefing",
+      "description": "Retrieve the live 2026/27 Fantasy Premier League (FPL) Gameweek Scout Briefing: top captaincy picks, RoboKlopp expected minutes (Start %), sub-10% differentials, <=£6.5m budget enablers, Gameweek transfer momentum, and injury/4-yellow-card bandwagon trap warnings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameweek": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 38,
+            "description": "Optional Gameweek number (1-38). Defaults to the active upcoming Gameweek."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_fpl_picks",
+      "description": "Filter 2026/27 FPL player recommendations by mode ('differentials', 'value', 'captains', 'xmins'), club slug, position ('GK', 'DEF', 'MID', 'FWD'), max price (£m), and max ownership (%).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "differentials",
+              "value",
+              "captains",
+              "xmins"
+            ],
+            "description": "Scout mode (default: 'differentials')"
+          },
+          "club": {
+            "type": "string",
+            "description": "Optional club slug or short code (e.g. 'arsenal', 'liverpool', 'man-city')"
+          },
+          "position": {
+            "type": "string",
+            "enum": [
+              "GK",
+              "DEF",
+              "MID",
+              "FWD"
+            ],
+            "description": "Optional FPL position filter"
+          },
+          "max_price": {
+            "type": "number",
+            "description": "Optional maximum price in £m (e.g. 6.5)"
+          },
+          "max_ownership": {
+            "type": "number",
+            "description": "Optional maximum TSB % ownership (e.g. 10.0)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_fpl_transfer_trends",
+      "description": "Retrieve live 2026/27 FPL Gameweek transfer momentum: most transferred-in players, most transferred-out players, price risers/fallers, and Bandwagon Trap warnings for injured, doubtful, or 4-yellow-card tightrope assets.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Number of rows per category (default: 15)"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "audit_fpl_players",
+      "description": "Audit a list of FPL player names (e.g. a user's 15-man squad or transfer shortlist) for RoboKlopp expected minutes (Start %), next fixture FDR, injury/doubt flags, 4-yellow-card suspension tightrope risk, set-piece duties, and expected points (ep_next).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "players": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "List of player names to audit (e.g. ['Haaland', 'Saka', 'Palmer', 'Isak'])"
+          }
+        },
+        "required": [
+          "players"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_referees",
+      "description": "Retrieve 2026/27 PGMOL Select Group 1 Premier League referee statistical dossiers (yellow/red cards per match, fouls, penalty rate, strictness index, and club disciplinary bias).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "referee": {
+            "type": "string",
+            "description": "Optional referee slug (e.g. 'michael-oliver', 'anthony-taylor')"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "get_transfer_rumours",
+      "description": "Retrieve 2026/27 Premier League transfer rumours rated Tier 1-4 by source reliability, enriched with club positional depth needs and incumbent starter benchmarks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "club": {
+            "type": "string",
+            "description": "Optional club slug (e.g. 'arsenal', 'liverpool', 'spurs')"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "execution": {
+        "taskSupport": "forbidden"
       }
     }
   ],
   "resources": [],
-  "prompts": []
+  "prompts": [
+    {
+      "name": "fpl_gameweek_briefing",
+      "description": "Generate a data-backed 2026/27 FPL Gameweek captaincy, differential, and transfer briefing.",
+      "arguments": [
+        {
+          "name": "gameweek",
+          "description": "Optional Gameweek number (1-38)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "fpl_team_doctor",
+      "description": "Audit an FPL manager's squad for RoboKlopp expected minutes, injury doubts, 4-yellow-card tightropes, and optimal transfers.",
+      "arguments": [
+        {
+          "name": "squad",
+          "description": "Comma-separated list of player names in the FPL squad",
+          "required": true
+        }
+      ]
+    }
+  ]
 }

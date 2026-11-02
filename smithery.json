@@ -1,6 +1,6 @@
 {
   "$schema": "https://smithery.ai/schema.json",
   "id": "Steven-Robinson/touchlinewire-mcp",
-  "name": "Touchline Wire MCP Server",
-  "description": "Premier League matchday tactical intelligence: verified starting lineups, tactical formations, live match reports with chronological event timelines, squad injuries, fixtures and standings."
+  "name": "Touchline Wire FPL & Premier League MCP Server",
+  "description": "Zero-auth 2026/27 Fantasy Premier League (FPL) expected minutes, captaincy picks, sub-10% differentials & live transfer trends, plus RoboKlopp predicted starting XIs, injuries, PGMOL referees, match reports and standings."
 }
