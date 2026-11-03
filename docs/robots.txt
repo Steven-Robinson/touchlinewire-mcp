@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://steven-robinson.github.io/touchlinewire-mcp/sitemap.xml

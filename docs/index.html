@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Touchline Wire MCP Server &amp; Open REST API — 2026/27 Premier League &amp; FPL Documentation</title>
+  <meta name="description" content="Official developer documentation for the Touchline Wire Model Context Protocol (MCP) server and unauthenticated OpenAPI 3.0 REST API. Live 2026/27 Fantasy Premier League expected minutes, RoboKlopp predicted lineups, PGMOL referee stats, injuries, and standings.">
+  <link rel="canonical" href="https://steven-robinson.github.io/touchlinewire-mcp/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://steven-robinson.github.io/touchlinewire-mcp/">
+  <meta property="og:title" content="Touchline Wire MCP Server &amp; Open REST API (2026/27 Season)">
+  <meta property="og:description" content="Zero-authentication Streamable HTTP MCP server and REST API for 2026/27 Fantasy Premier League expected minutes, RoboKlopp predicted starting XIs, injuries, and PGMOL referee dossiers.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "Touchline Wire FPL & Premier League MCP Server",
+    "codeRepository": "https://github.com/Steven-Robinson/touchlinewire-mcp",
+    "programmingLanguage": "JavaScript",
+    "license": "https://opensource.org/licenses/MIT",
+    "url": "https://steven-robinson.github.io/touchlinewire-mcp/",
+    "targetProduct": {
+      "@type": "WebApplication",
+      "name": "Touchline Wire",
+      "url": "https://touchlinewire.com/",
+      "applicationCategory": "SportsApplication"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Ouroborean Software Ltd",
+      "url": "https://ouroborean.co.uk/"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --surface: #111827;
+      --surface-elevated: #1e293b;
+      --border: rgba(148, 163, 184, 0.22);
+      --cyan: #38bdf8;
+      --cyan-bright: #7dd3fc;
+      --emerald: #34d399;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --dim: #94a3b8;
+      --radius: 12px;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+    }
+
+    .visually-hidden:where(:not(:focus-within, :active)) {
+      position: absolute !important;
+      clip-path: inset(50%) !important;
+      overflow: hidden !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: -1px !important;
+      padding: 0 !important;
+      border: 0 !important;
+      white-space: nowrap !important;
+    }
+
+    .skip-link:focus-visible {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 100;
+      background: var(--cyan);
+      color: #030e18;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    :where(a:any-link, button, summary):focus-visible,
+    pre:focus-visible,
+    .table-wrapper:focus-visible {
+      outline: 3px solid var(--cyan-bright);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 15, 23, 0.92);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 600;
+      min-block-size: 28px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    nav a:hover {
+      color: var(--cyan-bright);
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: #041321;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--cyan-bright);
+      color: #041321;
+    }
+
+    main {
+      padding: 3rem 0 4rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--emerald);
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.85rem);
+      line-height: 1.18;
+      margin: 0 0 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      margin: 3rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--cyan-bright);
+    }
+
+    .lead {
+      font-size: 1.12rem;
+      color: var(--muted);
+      max-width: 780px;
+      margin: 0 0 1.75rem;
+    }
+
+    a {
+      color: var(--cyan-bright);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 40px;
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .cta-btn.solid {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #041321;
+    }
+
+    .cta-btn:hover {
+      border-color: var(--cyan-bright);
+    }
+
+    .grid-cards {
+      list-style: none;
+      padding: 0;
+      margin: 1.25rem 0 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+    }
+
+    .card a {
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.35rem;
+    }
+
+    .card a:hover {
+      text-decoration: underline;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    figure {
+      margin: 1rem 0 1.5rem;
+    }
+
+    figcaption {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dim);
+      margin-bottom: 0.45rem;
+    }
+
+    pre {
+      margin: 0;
+      padding: 1rem 1.15rem;
+      background: #070b12;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: rgba(148, 163, 184, 0.14);
+      padding: 0.12rem 0.38rem;
+      border-radius: 5px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Responsive Table (modern-web-guidance responsive-table) */
+    .table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(640px, 82vh);
+      container-type: inline-size;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+      --label-2: "Capabilities";
+      --label-3: "Arguments";
+    }
+
+    caption {
+      text-align: left;
+      padding: 0.9rem 1rem;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+      background: var(--surface-elevated);
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      font-weight: 700;
+      color: var(--cyan-bright);
+      background: var(--surface-elevated);
+    }
+
+    tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--surface);
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      color: var(--emerald);
+      white-space: nowrap;
+    }
+
+    @container (width < 600px) {
+      table, thead, tbody, tr, th, td {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        margin-block-end: 0.85rem;
+        border-bottom: 2px solid var(--border);
+      }
+
+      tbody th {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+        background: var(--surface-elevated);
+        white-space: normal;
+      }
+
+      td:nth-child(2)::before {
+        content: var(--label-2) ": ";
+        font-weight: 700;
+        color: var(--cyan-bright);
+      }
+
+      td:nth-child(3)::before {
+        content: var(--label-3) ": ";
+        font-weight: 700;
+        color: var(--cyan-bright);
+      }
+    }
+
+    details {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    summary {
+      font-weight: 700;
+      cursor: pointer;
+      min-block-size: 28px;
+    }
+
+    details p {
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+      color: var(--dim);
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.15rem;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan-bright);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <a href="#page-title" class="skip-link visually-hidden">Skip to main content</a>
+
+  <header>
+    <div class="wrap header-inner">
+      <a href="https://steven-robinson.github.io/touchlinewire-mcp/" class="brand">Touchline Wire MCP &amp; API</a>
+      <nav aria-label="Primary">
+        <ul role="list">
+          <li><a href="#quickstart">Quickstart</a></li>
+          <li><a href="#tools">16 MCP Tools</a></li>
+          <li><a href="#hubs">2026/27 Data Hubs</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="https://touchlinewire.com/" class="btn-primary">Open Touchline Wire</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <span class="eyebrow">2026/27 Premier League &bull; Zero API Keys Required</span>
+    <h1 id="page-title" tabindex="-1">Touchline Wire FPL &amp; Premier League MCP Server</h1>
+    <p class="lead">
+      Connect Claude, Cursor, ChatGPT, Gemini CLI, VS Code, or custom AI agents directly to live <strong>2026/27 Premier League</strong> tactical intelligence powered by <a href="https://touchlinewire.com/">Touchline Wire</a>. Query Fantasy Premier League (FPL) expected minutes (<code>Start %</code>), captaincy rankings, sub-10% differentials, RoboKlopp predicted starting XIs, medical injury timelines, PGMOL referee statistical dossiers, stadium guides, and official standings with zero authentication.
+    </p>
+
+    <div class="cta-row">
+      <a href="https://touchlinewire.com/fpl" class="cta-btn solid">Explore 2026/27 FPL Scout Hub</a>
+      <a href="https://touchlinewire.com/docs" class="cta-btn">Interactive REST API &amp; MCP Docs</a>
+      <a href="https://touchlinewire.com/api/v1/openapi.json" class="cta-btn">OpenAPI 3.0 Specification</a>
+      <a href="https://github.com/Steven-Robinson/touchlinewire-mcp" class="cta-btn">GitHub Repository</a>
+    </div>
+
+    <section id="quickstart">
+      <h2>Quickstart Configuration</h2>
+
+      <h3>Option 1: Zero-Install Remote Streamable HTTP Server</h3>
+      <p>
+        Point any MCP <code>2025-03-26</code> Streamable HTTP client directly at <code>https://touchlinewire.com/mcp</code> — no local Node.js runtime or API token needed.
+      </p>
+      <figure>
+        <figcaption>Claude Code CLI one-line setup:</figcaption>
+        <pre tabindex="0"><code class="language-bash">claude mcp add --transport http touchlinewire https://touchlinewire.com/mcp</code></pre>
+      </figure>
+      <figure>
+        <figcaption>Remote HTTP configuration in <code>mcp.json</code> / Cursor / VS Code:</figcaption>
+        <pre tabindex="0"><code class="language-json">{
+  "mcpServers": {
+    "touchlinewire": {
+      "url": "https://touchlinewire.com/mcp"
+    }
+  }
+}</code></pre>
+      </figure>
+
+      <h3>Option 2: Local <code>stdio</code> Package via npm</h3>
+      <p>
+        Prefer a local <code>stdio</code> transport? Run <a href="https://www.npmjs.com/package/touchlinewire-mcp"><code>touchlinewire-mcp</code> on npm</a> directly via <code>npx</code>:
+      </p>
+      <figure>
+        <figcaption>Local stdio configuration for Claude Desktop, Cursor, or Gemini CLI:</figcaption>
+        <pre tabindex="0"><code class="language-json">{
+  "mcpServers": {
+    "touchlinewire": {
+      "command": "npx",
+      "args": ["-y", "touchlinewire-mcp"]
+    }
+  }
+}</code></pre>
+      </figure>
+    </section>
+
+    <section id="tools">
+      <h2>Available MCP Tools (16 Endpoints)</h2>
+      <p>
+        Every MCP tool maps to the public unauthenticated JSON feeds documented in the <a href="https://touchlinewire.com/docs">Interactive REST API &amp; MCP Docs</a> and machine-readable <a href="https://touchlinewire.com/api/v1/openapi.json">OpenAPI 3.0 Specification</a>.
+      </p>
+
+      <div tabindex="0" role="region" aria-labelledby="tools-table-caption" class="table-wrapper">
+        <table>
+          <caption id="tools-table-caption">Touchline Wire MCP v1.2.0 Tool Directory (2026/27 Season)</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tool Name</th>
+              <th scope="col">Capabilities</th>
+              <th scope="col">Arguments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">get_fpl_gameweek_briefing</th>
+              <td>Complete 2026/27 FPL Gameweek Scout Briefing: captains, RoboKlopp Start %, sub-10% differentials, &le;&pound;6.5m value enablers, and bandwagon traps.</td>
+              <td><code>gameweek</code> (optional 1–38)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_fpl_picks</th>
+              <td>Filter 2026/27 FPL player picks by scout mode, club, position, max price (&pound;m), and max ownership (%).</td>
+              <td><code>mode</code>, <code>club</code>, <code>position</code>, <code>max_price</code>, <code>max_ownership</code></td>
+            </tr>
+            <tr>
+              <th scope="row">get_fpl_transfer_trends</th>
+              <td>Live Gameweek transfers in/out, price risers/fallers, and injury or 4-yellow-card tightrope alerts.</td>
+              <td><code>limit</code> (optional)</td>
+            </tr>
+            <tr>
+              <th scope="row">audit_fpl_players</th>
+              <td>Audit a 15-player FPL squad or shortlist for RoboKlopp Start %, <code>ep_next</code>, fixture FDR, set-piece duty, and suspension risk.</td>
+              <td><code>players</code> (<code>string[]</code>)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_predicted_lineup</th>
+              <td>Verified RoboKlopp predicted Starting 11, tactical formation, bench, and confidence rating for a Premier League club.</td>
+              <td><code>club</code> (e.g. <code>"arsenal"</code>, <code>"liverpool"</code>)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_all_lineups</th>
+              <td>Complete slate of all 20 Premier League predicted Starting 11s and tactical formations for the upcoming Gameweek.</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">get_injuries</th>
+              <td>Live Premier League medical availability wire, return timelines, chance of playing %, and press conference takeaways.</td>
+              <td><code>club</code> (optional)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_set_piece_takers</th>
+              <td>Club-by-club hierarchy of primary and backup penalty, direct free-kick, and corner specialists across all 20 clubs.</td>
+              <td><code>club</code> (optional)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_fixture_difficulty</th>
+              <td>Upcoming Fixture Difficulty Ratings (FDR 1–5) ranking all 20 clubs easiest to hardest over a 3–10 match window.</td>
+              <td><code>window</code>, <code>sort</code>, <code>club</code></td>
+            </tr>
+            <tr>
+              <th scope="row">get_premier_league_table</th>
+              <td>Official 2026/27 20-club Premier League standings, points, goal difference, and 5-match form guide.</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">get_fixtures</th>
+              <td>Upcoming 2026/27 Premier League matchday schedule with UTC kickoff timestamps and home/away pairings.</td>
+              <td><code>gameweek</code>, <code>club</code></td>
+            </tr>
+            <tr>
+              <th scope="row">get_clubs</th>
+              <td>Directory of all 20 Premier League clubs with verified 2026/27 managers, stadiums, capacities, and primary kit colors.</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <th scope="row">get_match_preview</th>
+              <td>Pre-match tactical preview featuring predicted formation clash, head-to-head context, and squad availability.</td>
+              <td><code>home_club</code>, <code>away_club</code></td>
+            </tr>
+            <tr>
+              <th scope="row">get_match_report</th>
+              <td>Post-match tactical report with confirmed lineups, chronological timeline, xG, shots, and possession telemetry.</td>
+              <td><code>fixture_id</code>, <code>club</code>, <code>latest</code></td>
+            </tr>
+            <tr>
+              <th scope="row">get_referees</th>
+              <td>PGMOL Select Group 1 referee statistical dossiers: strictness tier, cards per match, fouls, penalty rate, and club history.</td>
+              <td><code>referee</code> (optional)</td>
+            </tr>
+            <tr>
+              <th scope="row">get_transfer_rumours</th>
+              <td>Credibility-graded (Tier 1–4) 2026/27 Premier League transfer speculation paired with club positional depth needs.</td>
+              <td><code>club</code> (optional)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="hubs">
+      <h2>Live 2026/27 Touchline Wire Platform Hubs</h2>
+      <p>
+        Browse the interactive web views backing each dataset directly on <a href="https://touchlinewire.com/">Touchline Wire</a>:
+      </p>
+      <ul class="grid-cards" role="list">
+        <li class="card">
+          <a href="https://touchlinewire.com/fpl">2026/27 FPL Scout Hub</a>
+          <p>Expected minutes (Start %), Gameweek captaincy models, sub-10% differentials, and transfer momentum.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/fixtures">Premier League Fixtures</a>
+          <p>Full 38-gameweek 2026/27 match calendar with pre-match tactical previews and post-match pitch boards.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/table">2026/27 League Standings</a>
+          <p>Live 20-club Premier League table with points, goal difference, qualification zones, and form guides.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/injuries">Premier League Injury Wire</a>
+          <p>Medical return timelines, late fitness tests, suspension tightropes, and verified manager quotes.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/referees">PGMOL Referee Dossiers</a>
+          <p>Select Group 1 referee strictness indices, yellow/red cards per game, foul rates, and penalty benchmarks.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/stadiums">Premier League Stadium Guides</a>
+          <p>Verified 2026/27 stadium capacities, pitch dimensions (metres &amp; yards), surface data, and tactical impact.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/news">Tier-1 Verified Newsdesk</a>
+          <p>Curated press conference wire aggregating trusted Premier League reporting without clickbait noise.</p>
+        </li>
+        <li class="card">
+          <a href="https://touchlinewire.com/studio">Tactical Creator Studio</a>
+          <p>Build and export crisp 1080&times;1350 custom starting XI graphics for match previews and social analysis.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <h2>Frequently Asked Questions</h2>
+      <details name="faq">
+        <summary>Do I need an API key or account to use Touchline Wire MCP or REST endpoints?</summary>
+        <p>No. Both the Remote Streamable HTTP MCP server (<code>https://touchlinewire.com/mcp</code>) and the public REST API (<code>https://touchlinewire.com/api/v1/*</code>) are 100% free and unauthenticated under the MIT license with attribution.</p>
+      </details>
+      <details name="faq">
+        <summary>Which football season powers the Touchline Wire feeds?</summary>
+        <p>All endpoints serve live current-season <strong>2026/27 Premier League</strong> squads, verified 2026/27 head coaches, official standings, PGMOL referee appointments, and Fantasy Premier League telemetry.</p>
+      </details>
+      <details name="faq">
+        <summary>Can I call the REST API directly without MCP?</summary>
+        <p>Yes. Import the <a href="https://touchlinewire.com/api/v1/openapi.json">OpenAPI 3.0 Specification</a> into Postman, Insomnia, Python, TypeScript, or OpenAI Custom GPT Actions, or browse live examples in the <a href="https://touchlinewire.com/docs">Interactive REST API &amp; MCP Docs</a>.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <nav aria-label="Footer">
+        <ul class="footer-links" role="list">
+          <li><a href="https://touchlinewire.com/">Touchline Wire</a></li>
+          <li><a href="https://touchlinewire.com/fpl">Explore 2026/27 FPL Scout Hub</a></li>
+          <li><a href="https://touchlinewire.com/docs">Interactive REST API &amp; MCP Docs</a></li>
+          <li><a href="https://touchlinewire.com/referees">PGMOL Referee Dossiers</a></li>
+          <li><a href="https://touchlinewire.com/injuries">Premier League Injury Wire</a></li>
+          <li><a href="https://touchlinewire.com/stadiums">Premier League Stadium Guides</a></li>
+          <li><a href="https://ouroborean.co.uk/">Ouroborean Software Ltd</a></li>
+        </ul>
+      </nav>
+      <p>Built and maintained by <a href="https://ouroborean.co.uk/">Ouroborean Software Ltd</a>. Open-source MIT license.</p>
+    </div>
+  </footer>
+</body>
+</html>
