@@ -4,7 +4,9 @@
 
 > **Zero-authentication Model Context Protocol (MCP) server** providing live **2026/27 Fantasy Premier League (FPL)** expected minutes (`Start %`), Gameweek captaincy picks, `<10%` differentials, `≤£6.5m` budget value enablers, live transfer momentum & bandwagon traps, plus **RoboKlopp predicted Starting XIs**, medical injury wires, PGMOL referee dossiers, match reports, and standings.
 
-Powered by [Touchline Wire](https://touchlinewire.com/fpl). **Zero API keys or sign-ups required.** Available as both a **zero-install Remote HTTP endpoint (`https://touchlinewire.com/mcp`)** and a **local `stdio` npm package (`npx -y touchlinewire-mcp`)**.
+Powered by [Touchline Wire](https://touchlinewire.com/fpl) ([Ouroborean Software Ltd](https://ouroborean.co.uk/)). **Zero API keys or sign-ups required.** Available as both a **zero-install Remote HTTP endpoint (`https://touchlinewire.com/mcp`)** and a **local `stdio` npm package (`npx -y touchlinewire-mcp`)**.
+
+📖 **Documentation & Quickstart Guide**: [steven-robinson.github.io/touchlinewire-mcp](https://steven-robinson.github.io/touchlinewire-mcp/) | [Interactive REST API & OpenAPI 3.0 Docs](https://touchlinewire.com/docs)
 
 ---
 
