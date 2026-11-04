@@ -3,8 +3,17 @@
   "name": "io.github.Steven-Robinson/touchlinewire-mcp",
   "title": "Touchline Wire — FPL & Premier League Intelligence",
   "description": "Zero-auth FPL expected minutes, captains & transfers, plus Premier League lineups & stats.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "websiteUrl": "https://touchlinewire.com/fpl",
+  "icons": [
+    {
+      "src": "https://touchlinewire.com/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
   "repository": {
     "url": "https://github.com/Steven-Robinson/touchlinewire-mcp",
     "source": "github"

@@ -16,8 +16,15 @@ const BASE_URL = "https://touchlinewire.com/api/v1";
 
 const server = new McpServer({
   name: "touchlinewire-mcp",
-  version: "1.2.0"
+  version: "1.2.1"
 });
+
+const READ_ONLY_ANNOTATIONS = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false
+};
 
 // Helper for fetching from Touchline Wire API
 async function fetchTouchline(endpoint) {
@@ -25,7 +32,7 @@ async function fetchTouchline(endpoint) {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "TouchlineWire-MCP/1.0",
+        "User-Agent": "TouchlineWire-MCP/1.2.1",
         "Accept": "application/json"
       }
     });
@@ -42,7 +49,7 @@ async function fetchTouchline(endpoint) {
 server.tool(
   "get_premier_league_table",
   "Retrieve the official 20-club Premier League standings including points, matches played, goal difference, goals scored/conceded, and 5-match form guide.",
-  {},
+  READ_ONLY_ANNOTATIONS,
   async () => {
     const data = await fetchTouchline("/table");
     return {
@@ -63,6 +70,7 @@ server.tool(
   {
     club: z.string().describe("Club name or slug (e.g. 'arsenal', 'liverpool', 'chelsea', 'man-city', 'spurs', 'aston-villa')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ club }) => {
     const cleanClub = club.toLowerCase().trim().replace(/\s+/g, "-");
     const data = await fetchTouchline(`/lineups/${encodeURIComponent(cleanClub)}`);
@@ -81,7 +89,7 @@ server.tool(
 server.tool(
   "get_all_lineups",
   "Retrieve the complete slate of all 20 Premier League predicted formations, starting XIs, and tactical confidence scores for the current gameweek.",
-  {},
+  READ_ONLY_ANNOTATIONS,
   async () => {
     const data = await fetchTouchline("/lineups");
     return {
@@ -102,6 +110,7 @@ server.tool(
   {
     club: z.string().optional().describe("Optional club name or slug to filter injuries (e.g. 'arsenal', 'chelsea')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ club }) => {
     const endpoint = club
       ? `/injuries?club=${encodeURIComponent(club.toLowerCase().trim())}`
@@ -126,6 +135,7 @@ server.tool(
     gameweek: z.number().int().optional().describe("Optional specific gameweek number (e.g. 7, 8)"),
     club: z.string().optional().describe("Optional club name to filter fixtures (e.g. 'liverpool')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ gameweek, club }) => {
     const params = new URLSearchParams();
     if (gameweek !== undefined) params.set("gameweek", gameweek.toString());
@@ -147,7 +157,7 @@ server.tool(
 server.tool(
   "get_clubs",
   "List all 20 Premier League clubs with official managers, stadium names, capacities, primary club colors, and designated set-piece specialists (corners, free kicks, penalties).",
-  {},
+  READ_ONLY_ANNOTATIONS,
   async () => {
     const data = await fetchTouchline("/clubs");
     return {
@@ -170,6 +180,7 @@ server.tool(
     club: z.string().optional().describe("Club name or slug to get the latest match for (e.g. 'arsenal', 'chelsea')"),
     latest: z.boolean().optional().describe("Set to true to get the latest match across the entire Premier League")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ fixture_id, club, latest }) => {
     let endpoint = "/matches/latest";
     if (fixture_id !== undefined) {
@@ -197,6 +208,7 @@ server.tool(
   {
     club: z.string().optional().describe("Optional Premier League club name or slug (e.g. 'arsenal', 'chelsea', 'liverpool'). If omitted, returns all 20 clubs.")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ club }) => {
     let endpoint = "/set-pieces";
     if (club) {
@@ -224,6 +236,7 @@ server.tool(
     sort: z.enum(["easiest", "hardest"]).optional().describe("Sort ordering of ranked clubs (default: 'easiest')"),
     club: z.string().optional().describe("Filter schedule difficulty to a single club (e.g. 'arsenal')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ window = 5, sort = "easiest", club }) => {
     let endpoint = `/schedule/difficulty?window=${window}&sort=${sort}`;
     if (club) {
@@ -250,6 +263,7 @@ server.tool(
     home_club: z.string().describe("Home club name or slug (e.g. 'arsenal', 'liverpool', 'man-city')"),
     away_club: z.string().describe("Away club name or slug (e.g. 'chelsea', 'spurs', 'aston-villa')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ home_club, away_club }) => {
     const cleanHome = home_club.toLowerCase().trim().replace(/\s+/g, "-");
     const cleanAway = away_club.toLowerCase().trim().replace(/\s+/g, "-");
@@ -273,6 +287,7 @@ server.tool(
   {
     gameweek: z.number().int().min(1).max(38).optional().describe("Optional Gameweek number (1-38). Defaults to the active upcoming Gameweek.")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ gameweek }) => {
     const query = gameweek !== undefined ? `?gameweek=${gameweek}` : "";
     const data = await fetchTouchline(`/fpl/overview${query}`);
@@ -293,6 +308,7 @@ server.tool(
     max_price: z.number().optional().describe("Optional maximum price in £m (e.g. 6.5)"),
     max_ownership: z.number().optional().describe("Optional maximum TSB % ownership (e.g. 10.0)")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ mode, club, position, max_price, max_ownership }) => {
     const params = new URLSearchParams();
     if (mode) params.set("mode", mode);
@@ -315,6 +331,7 @@ server.tool(
   {
     limit: z.number().int().min(1).max(50).optional().describe("Number of rows per category (default: 15)")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ limit }) => {
     const query = limit !== undefined ? `?limit=${limit}` : "";
     const data = await fetchTouchline(`/fpl/transfers${query}`);
@@ -331,6 +348,7 @@ server.tool(
   {
     players: z.array(z.string()).min(1).describe("List of player names to audit (e.g. ['Haaland', 'Saka', 'Palmer', 'Isak'])")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ players }) => {
     const payload = await fetchTouchline("/fpl/picks?mode=xmins&limit=650");
     const pool = Array.isArray(payload?.data) ? payload.data : [];
@@ -372,6 +390,7 @@ server.tool(
   {
     referee: z.string().optional().describe("Optional referee slug (e.g. 'michael-oliver', 'anthony-taylor')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ referee }) => {
     const endpoint = referee
       ? `/referees/${encodeURIComponent(referee.toLowerCase().trim().replace(/\s+/g, "-"))}`
@@ -390,6 +409,7 @@ server.tool(
   {
     club: z.string().optional().describe("Optional club slug (e.g. 'arsenal', 'liverpool', 'spurs')")
   },
+  READ_ONLY_ANNOTATIONS,
   async ({ club }) => {
     const query = club ? `?club=${encodeURIComponent(club.toLowerCase().trim())}` : "";
     const data = await fetchTouchline(`/rumours${query}`);
