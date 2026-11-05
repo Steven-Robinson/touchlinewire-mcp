@@ -1,6 +1,7 @@
 # Touchline Wire FPL & Premier League MCP Server ⚽
 
 [![Steven-Robinson/touchlinewire-mcp MCP server](https://glama.ai/mcp/servers/Steven-Robinson/touchlinewire-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Steven-Robinson/touchlinewire-mcp)
+[![Touchlinewire Mcp score on AI Agents Listing](https://aiagentslisting.com/touchlinewire-mcp/badge.svg?variant=score)](https://aiagentslisting.com/mcp/touchlinewire-mcp)
 
 > **Zero-authentication Model Context Protocol (MCP) server** providing live **2026/27 Fantasy Premier League (FPL)** expected minutes (`Start %`), Gameweek captaincy picks, `<10%` differentials, `≤£6.5m` budget value enablers, live transfer momentum & bandwagon traps, plus **RoboKlopp predicted Starting XIs**, medical injury wires, PGMOL referee dossiers, match reports, and standings.
 
